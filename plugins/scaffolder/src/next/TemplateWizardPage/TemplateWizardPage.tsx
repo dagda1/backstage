@@ -34,6 +34,7 @@ import { SecretsContext } from '../../components/secrets/SecretsContext';
 import { JsonValue } from '@backstage/types';
 import type { ErrorTransformer } from '@rjsf/utils';
 import { TemplateWizardContent } from '../TemplateWizardContent/TemplateWizardContent';
+import { Header, Page } from '@backstage/core-components';
 
 export interface TemplateWizardPageProps {
   customFieldExtensions: NextFieldExtensionOptions<any, any>[];
@@ -80,14 +81,21 @@ export const TemplateWizardPage = (props: TemplateWizardPageProps) => {
 
   return (
     <AnalyticsContext attributes={{ entityRef: templateRef }}>
-      <TemplateWizardContent
-        namespace={namespace}
-        templateName={templateName}
-        onComplete={onComplete}
-        onError={onError}
-        customFieldExtensions={props.customFieldExtensions}
-        transformErrors={props.transformErrors}
-      />
+      <Page themeId="website">
+        <Header
+          pageTitleOverride="Create a new component"
+          title="Create a new component"
+          subtitle="Create new software components using standard templates in your organization"
+        />
+        <TemplateWizardContent
+          namespace={namespace}
+          templateName={templateName}
+          onComplete={onComplete}
+          onError={onError}
+          customFieldExtensions={props.customFieldExtensions}
+          transformErrors={props.transformErrors}
+        />
+      </Page>
     </AnalyticsContext>
   );
 };

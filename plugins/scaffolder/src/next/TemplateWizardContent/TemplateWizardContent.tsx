@@ -16,10 +16,8 @@
 import React, { useEffect } from 'react';
 import {
   Content,
-  Header,
   InfoCard,
   MarkdownContent,
-  Page,
   Progress,
 } from '@backstage/core-components';
 import { stringifyEntityRef } from '@backstage/catalog-model';
@@ -31,10 +29,7 @@ import { makeStyles } from '@material-ui/core';
 import { BackstageTheme } from '@backstage/theme';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { Stepper } from '../TemplateWizardPage/Stepper';
-import {
-  SecretsContext,
-  SecretsContextProvider,
-} from '../../components/secrets/SecretsContext';
+import { SecretsContextProvider } from '../../components/secrets/SecretsContext';
 
 const useStyles = makeStyles<BackstageTheme>(() => ({
   markdown: {
@@ -83,37 +78,30 @@ export const TemplateWizardContent = (
   }
 
   return (
-    <Page themeId="website">
-      <Header
-        pageTitleOverride="Create a new component"
-        title="Create a new component"
-        subtitle="Create new software components using standard templates in your organization"
-      />
-      <Content>
-        {loading && <Progress />}
-        {manifest && (
-          <InfoCard
-            title={manifest.title}
-            subheader={
-              <MarkdownContent
-                className={styles.markdown}
-                content={manifest.description ?? 'No description'}
-              />
-            }
-            noPadding
-            titleTypographyProps={{ component: 'h2' }}
-          >
-            <Stepper
-              manifest={manifest}
-              extensions={props.customFieldExtensions}
-              onComplete={props.onComplete}
-              transformErrors={props.transformErrors}
-              initialFormState={props.initialFormState}
+    <Content>
+      {loading && <Progress />}
+      {manifest && (
+        <InfoCard
+          title={manifest.title}
+          subheader={
+            <MarkdownContent
+              className={styles.markdown}
+              content={manifest.description ?? 'No description'}
             />
-          </InfoCard>
-        )}
-      </Content>
-    </Page>
+          }
+          noPadding
+          titleTypographyProps={{ component: 'h2' }}
+        >
+          <Stepper
+            manifest={manifest}
+            extensions={props.customFieldExtensions}
+            onComplete={props.onComplete}
+            transformErrors={props.transformErrors}
+            initialFormState={props.initialFormState}
+          />
+        </InfoCard>
+      )}
+    </Content>
   );
 };
 
