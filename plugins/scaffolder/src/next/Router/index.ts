@@ -13,5 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { Router } from './Router';
+export { Router, useGetCustomFields } from './Router';
 export type { NextRouterProps } from './Router';

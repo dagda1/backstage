@@ -13,30 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useContext, useEffect } from 'react';
-import {
-  Page,
-  Header,
-  Content,
-  Progress,
-  InfoCard,
-  MarkdownContent,
-} from '@backstage/core-components';
+import React, { useContext } from 'react';
 import { NextFieldExtensionOptions } from '../../extensions';
 import { Navigate, useNavigate } from 'react-router';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import {
   AnalyticsContext,
-  errorApiRef,
   useApi,
   useRouteRef,
   useRouteRefParams,
 } from '@backstage/core-plugin-api';
 import { scaffolderApiRef } from '../../api';
 import useAsync from 'react-use/lib/useAsync';
-import { makeStyles } from '@material-ui/core';
-import { Stepper } from './Stepper';
-import { BackstageTheme } from '@backstage/theme';
 import {
   nextRouteRef,
   scaffolderTaskRouteRef,
@@ -45,25 +33,14 @@ import {
 import { SecretsContext } from '../../components/secrets/SecretsContext';
 import { JsonValue } from '@backstage/types';
 import type { ErrorTransformer } from '@rjsf/utils';
+import { TemplateWizardContent } from '../TemplateWizardContent/TemplateWizardContent';
 
 export interface TemplateWizardPageProps {
   customFieldExtensions: NextFieldExtensionOptions<any, any>[];
   transformErrors?: ErrorTransformer;
 }
 
-const useStyles = makeStyles<BackstageTheme>(() => ({
-  markdown: {
-    /** to make the styles for React Markdown not leak into the description */
-    '& :first-child': {
-      marginTop: 0,
-    },
-    '& :last-child': {
-      marginBottom: 0,
-    },
-  },
-}));
-
-const useTemplateParameterSchema = (templateRef: string) => {
+export const useTemplateParameterSchema = (templateRef: string) => {
   const scaffolderApi = useApi(scaffolderApiRef);
   const { value, loading, error } = useAsync(
     () => scaffolderApi.getTemplateParameterSchema(templateRef),
@@ -74,7 +51,6 @@ const useTemplateParameterSchema = (templateRef: string) => {
 };
 
 export const TemplateWizardPage = (props: TemplateWizardPageProps) => {
-  const styles = useStyles();
   const rootRef = useRouteRef(nextRouteRef);
   const taskRoute = useRouteRef(scaffolderTaskRouteRef);
   const { secrets } = useContext(SecretsContext) ?? {};
@@ -90,9 +66,6 @@ export const TemplateWizardPage = (props: TemplateWizardPageProps) => {
     name: templateName,
   });
 
-  const errorApi = useApi(errorApiRef);
-  const { loading, manifest, error } = useTemplateParameterSchema(templateRef);
-
   const onComplete = async (values: Record<string, JsonValue>) => {
     const { taskId } = await scaffolderApi.scaffold({
       templateRef,
@@ -103,48 +76,18 @@ export const TemplateWizardPage = (props: TemplateWizardPageProps) => {
     navigate(taskRoute({ taskId }));
   };
 
-  useEffect(() => {
-    if (error) {
-      errorApi.post(new Error(`Failed to load template, ${error}`));
-    }
-  }, [error, errorApi]);
-
-  if (error) {
-    return <Navigate to={rootRef()} />;
-  }
+  const onError = () => <Navigate to={rootRef()} />;
 
   return (
     <AnalyticsContext attributes={{ entityRef: templateRef }}>
-      <Page themeId="website">
-        <Header
-          pageTitleOverride="Create a new component"
-          title="Create a new component"
-          subtitle="Create new software components using standard templates in your organization"
-        />
-        <Content>
-          {loading && <Progress />}
-          {manifest && (
-            <InfoCard
-              title={manifest.title}
-              subheader={
-                <MarkdownContent
-                  className={styles.markdown}
-                  content={manifest.description ?? 'No description'}
-                />
-              }
-              noPadding
-              titleTypographyProps={{ component: 'h2' }}
-            >
-              <Stepper
-                manifest={manifest}
-                extensions={props.customFieldExtensions}
-                onComplete={onComplete}
-                transformErrors={props.transformErrors}
-              />
-            </InfoCard>
-          )}
-        </Content>
-      </Page>
+      <TemplateWizardContent
+        namespace={namespace}
+        templateName={templateName}
+        onComplete={onComplete}
+        onError={onError}
+        customFieldExtensions={props.customFieldExtensions}
+        transformErrors={props.transformErrors}
+      />
     </AnalyticsContext>
   );
 };

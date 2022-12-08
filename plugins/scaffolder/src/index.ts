@@ -72,6 +72,7 @@ export type { TaskPageProps } from './components/TaskPage';
 
 /** next exports */
 export { NextScaffolderPage } from './plugin';
+export { TemplateWizardContent, useGetCustomFields } from './next';
 export type { NextRouterProps } from './next';
 export type { TemplateGroupFilter } from './next';
 export {

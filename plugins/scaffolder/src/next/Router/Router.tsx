@@ -48,17 +48,8 @@ export type NextRouterProps = {
   transformErrors?: ErrorTransformer;
 };
 
-/**
- * The Scaffolder Router
- *
- * @alpha
- */
-export const Router = (props: PropsWithChildren<NextRouterProps>) => {
-  const { components: { TemplateCardComponent } = {} } = props;
-
-  const outlet = useOutlet() || props.children;
-
-  const customFieldExtensions = useElementFilter(outlet, elements =>
+export const useGetCustomFields = (element: React.ReactNode) => {
+  const customFieldExtensions = useElementFilter(element, elements =>
     elements
       .selectByComponentData({
         key: FIELD_EXTENSION_WRAPPER_KEY,
@@ -77,6 +68,21 @@ export const Router = (props: PropsWithChildren<NextRouterProps>) => {
         ),
     ),
   ] as NextFieldExtensionOptions[];
+
+  return fieldExtensions;
+};
+
+/**
+ * The Scaffolder Router
+ *
+ * @alpha
+ */
+export const Router = (props: PropsWithChildren<NextRouterProps>) => {
+  const { components: { TemplateCardComponent } = {} } = props;
+
+  const outlet = useOutlet() || props.children;
+
+  const fieldExtensions = useGetCustomFields(outlet);
 
   return (
     <Routes>
