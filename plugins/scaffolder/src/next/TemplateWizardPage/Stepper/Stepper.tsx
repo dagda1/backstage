@@ -59,6 +59,7 @@ export interface StepperProps {
   extensions: NextFieldExtensionOptions<any, any>[];
   onComplete: (values: Record<string, JsonValue>) => Promise<void>;
   transformErrors?: ErrorTransformer;
+  initialFormState?: Record<string, JsonValue>;
 }
 
 // TODO(blam): We require here, as the types in this package depend on @rjsf/core explicitly
@@ -72,7 +73,9 @@ export const Stepper = (props: StepperProps) => {
   const { steps } = useTemplateSchema(props.manifest);
   const apiHolder = useApiHolder();
   const [activeStep, setActiveStep] = useState(0);
-  const [formState, setFormState] = useState<Record<string, JsonValue>>({});
+  const [formState, setFormState] = useState<Record<string, JsonValue>>(
+    props.initialFormState ?? {},
+  );
   const [errors, setErrors] = useState<
     undefined | Record<string, FieldValidation>
   >();
