@@ -19,7 +19,7 @@ import { JsonObject } from '@backstage/types';
 import { ParsedTemplateSchema } from './useTemplateSchema';
 import { Draft07 as JSONSchema } from 'json-schema-library';
 
-interface ReviewStateProps {
+export interface ReviewStateProps {
   schemas: ParsedTemplateSchema[];
   formState: JsonObject;
 }

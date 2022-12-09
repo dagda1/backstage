@@ -30,6 +30,8 @@ import { BackstageTheme } from '@backstage/theme';
 import { errorApiRef, useApi } from '@backstage/core-plugin-api';
 import { Stepper } from '../TemplateWizardPage/Stepper';
 import { SecretsContextProvider } from '../../components/secrets/SecretsContext';
+import { ReviewState } from '../TemplateWizardPage/Stepper/ReviewState';
+import type { ReviewStateProps } from '../TemplateWizardPage/Stepper/ReviewState';
 
 const useStyles = makeStyles<BackstageTheme>(() => ({
   markdown: {
@@ -43,7 +45,9 @@ const useStyles = makeStyles<BackstageTheme>(() => ({
   },
 }));
 
-export interface TemplateWizardContentProps {
+export interface TemplateContentProps {
+  title?: string;
+  description?: string;
   namespace: string;
   templateName: string;
   customFieldExtensions: NextFieldExtensionOptions<any, any>[];
@@ -51,11 +55,13 @@ export interface TemplateWizardContentProps {
   onComplete: (values: Record<string, JsonValue>) => Promise<void>;
   onError(error: Error | undefined): JSX.Element | null;
   initialFormState?: Record<string, JsonValue>;
+  ReviewStateWrapper?: (props: ReviewStateProps) => JSX.Element;
 }
 
-export const TemplateWizardContent = (
-  props: TemplateWizardContentProps,
-): JSX.Element | null => {
+export const TemplateWizardContent = ({
+  ReviewStateWrapper = ReviewState,
+  ...props
+}: TemplateContentProps): JSX.Element | null => {
   const styles = useStyles();
   const templateRef = stringifyEntityRef({
     kind: 'Template',
@@ -82,11 +88,13 @@ export const TemplateWizardContent = (
       {loading && <Progress />}
       {manifest && (
         <InfoCard
-          title={manifest.title}
+          title={props.title ?? manifest.title}
           subheader={
             <MarkdownContent
               className={styles.markdown}
-              content={manifest.description ?? 'No description'}
+              content={
+                props.description ?? manifest.description ?? 'No description'
+              }
             />
           }
           noPadding
@@ -98,6 +106,7 @@ export const TemplateWizardContent = (
             onComplete={props.onComplete}
             transformErrors={props.transformErrors}
             initialFormState={props.initialFormState}
+            ReviewStateWrapper={ReviewStateWrapper}
           />
         </InfoCard>
       )}
@@ -105,7 +114,7 @@ export const TemplateWizardContent = (
   );
 };
 
-export const TemplateContent = (props: TemplateWizardContentProps) => (
+export const TemplateContent = (props: TemplateContentProps) => (
   <SecretsContextProvider>
     <TemplateWizardContent {...props} />
   </SecretsContextProvider>

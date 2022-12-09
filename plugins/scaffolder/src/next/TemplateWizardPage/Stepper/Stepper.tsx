@@ -33,7 +33,7 @@ import { NextFieldExtensionOptions } from '../../../extensions';
 import { TemplateParameterSchema } from '../../../types';
 import { createAsyncValidators } from './createAsyncValidators';
 import { useTemplateSchema } from './useTemplateSchema';
-import { ReviewState } from './ReviewState';
+import { ReviewState, ReviewStateProps } from './ReviewState';
 import validator from '@rjsf/validator-ajv8';
 import { selectedTemplateRouteRef } from '../../../routes';
 import type { ErrorTransformer } from '@rjsf/utils';
@@ -60,6 +60,7 @@ export interface StepperProps {
   onComplete: (values: Record<string, JsonValue>) => Promise<void>;
   transformErrors?: ErrorTransformer;
   initialFormState?: Record<string, JsonValue>;
+  ReviewStateWrapper?: (props: ReviewStateProps) => JSX.Element;
 }
 
 // TODO(blam): We require here, as the types in this package depend on @rjsf/core explicitly
@@ -67,7 +68,10 @@ export interface StepperProps {
 // of the re-writing we're doing. Once we've migrated, we can import this the exact same as before.
 const Form = withTheme(require('@rjsf/material-ui-v5').Theme);
 
-export const Stepper = (props: StepperProps) => {
+export const Stepper = ({
+  ReviewStateWrapper = ReviewState,
+  ...props
+}: StepperProps) => {
   const { templateName } = useRouteRefParams(selectedTemplateRouteRef);
   const analytics = useAnalytics();
   const { steps } = useTemplateSchema(props.manifest);
@@ -183,7 +187,7 @@ export const Stepper = (props: StepperProps) => {
           </Form>
         ) : (
           <>
-            <ReviewState formState={formState} schemas={steps} />
+            <ReviewStateWrapper formState={formState} schemas={steps} />
             <div className={styles.footer}>
               <Button
                 onClick={handleBack}
