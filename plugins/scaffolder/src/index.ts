@@ -76,6 +76,8 @@ export {
   EmbeddableWorkflow,
   useGetCustomFields,
   type WorkflowProps,
+  type ReviewStateProps,
+  type ParsedTemplateSchema,
 } from './next';
 export type { NextRouterProps } from './next';
 export type { TemplateGroupFilter } from './next';

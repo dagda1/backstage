@@ -48,6 +48,11 @@ export type NextRouterProps = {
   transformErrors?: ErrorTransformer;
 };
 
+/**
+ * Extract Custom field extensions
+ *
+ * @alpha
+ */
 export const useGetCustomFields = (element: React.ReactNode) => {
   const customFieldExtensions = useElementFilter(element, elements =>
     elements

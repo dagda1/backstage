@@ -74,6 +74,9 @@ export type CustomFieldValidator<TFieldReturnValue> = (
   },
 ) => void | Promise<void>;
 
+// @alpha (undocumented)
+export const EmbeddableWorkflow: (props: WorkflowProps) => JSX.Element;
+
 // @public
 export const EntityNamePickerFieldExtension: FieldExtensionComponent<
   string,
@@ -325,6 +328,20 @@ export const OwnerPickerFieldSchema: FieldSchema<
 // @public
 export type OwnerPickerUiOptions = typeof OwnerPickerFieldSchema.uiOptionsType;
 
+// @alpha (undocumented)
+export interface ParsedTemplateSchema {
+  // (undocumented)
+  description?: string;
+  // (undocumented)
+  mergedSchema: JsonObject;
+  // (undocumented)
+  schema: JsonObject;
+  // (undocumented)
+  title: string;
+  // (undocumented)
+  uiSchema: UiSchema;
+}
+
 // @public
 export const repoPickerValidation: (
   value: string,
@@ -387,6 +404,14 @@ export const RepoUrlPickerFieldSchema: FieldSchema<
 // @public
 export type RepoUrlPickerUiOptions =
   typeof RepoUrlPickerFieldSchema.uiOptionsType;
+
+// @alpha (undocumented)
+export interface ReviewStateProps {
+  // (undocumented)
+  formState: JsonObject;
+  // (undocumented)
+  schemas: ParsedTemplateSchema[];
+}
 
 // @public
 export type ReviewStepProps = {
@@ -665,6 +690,35 @@ export type TemplateParameterSchema = {
 // @public
 export const TemplateTypePicker: () => JSX.Element | null;
 
+// @alpha
+export const useGetCustomFields: (
+  element: React_2.ReactNode,
+) => NextFieldExtensionOptions<unknown, unknown>[];
+
 // @public
 export const useTemplateSecrets: () => ScaffolderUseTemplateSecrets;
+
+// @alpha (undocumented)
+export interface WorkflowProps {
+  // (undocumented)
+  customFieldExtensions: NextFieldExtensionOptions<any, any>[];
+  // (undocumented)
+  description?: string;
+  // (undocumented)
+  initialFormState?: Record<string, JsonValue>;
+  // (undocumented)
+  namespace: string;
+  // (undocumented)
+  onComplete: (values: Record<string, JsonValue>) => Promise<void>;
+  // (undocumented)
+  onError(error: Error | undefined): JSX.Element | null;
+  // (undocumented)
+  ReviewStateWrapper?: (props: ReviewStateProps) => JSX.Element;
+  // (undocumented)
+  templateName: string;
+  // (undocumented)
+  title?: string;
+  // (undocumented)
+  transformErrors?: ErrorTransformer;
+}
 ```

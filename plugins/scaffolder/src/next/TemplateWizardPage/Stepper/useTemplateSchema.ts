@@ -19,6 +19,9 @@ import { UiSchema } from '@rjsf/utils';
 import { TemplateParameterSchema } from '../../../types';
 import { extractSchemaFromStep } from './schema';
 
+/**
+ * @alpha
+ */
 export interface ParsedTemplateSchema {
   uiSchema: UiSchema;
   mergedSchema: JsonObject;
