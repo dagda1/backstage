@@ -16,5 +16,5 @@
 export * from './Router';
 export * from './TemplateListPage';
 export * from './TemplateWizardPage';
-export * from './TemplateWizardContent';
+export * from './Workflow';
 export type { ReviewStateProps } from './TemplateWizardPage/Stepper/ReviewState';

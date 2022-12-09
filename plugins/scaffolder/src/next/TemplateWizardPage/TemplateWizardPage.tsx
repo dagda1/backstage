@@ -33,7 +33,7 @@ import {
 import { SecretsContext } from '../../components/secrets/SecretsContext';
 import { JsonValue } from '@backstage/types';
 import type { ErrorTransformer } from '@rjsf/utils';
-import { TemplateWizardContent } from '../TemplateWizardContent/TemplateWizardContent';
+import { Workflow } from '../Workflow/Workflow';
 import { Header, Page } from '@backstage/core-components';
 
 export interface TemplateWizardPageProps {
@@ -87,7 +87,7 @@ export const TemplateWizardPage = (props: TemplateWizardPageProps) => {
           title="Create a new component"
           subtitle="Create new software components using standard templates in your organization"
         />
-        <TemplateWizardContent
+        <Workflow
           namespace={namespace}
           templateName={templateName}
           onComplete={onComplete}

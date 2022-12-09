@@ -45,7 +45,7 @@ const useStyles = makeStyles<BackstageTheme>(() => ({
   },
 }));
 
-export interface TemplateContentProps {
+export interface WorkflowProps {
   title?: string;
   description?: string;
   namespace: string;
@@ -58,10 +58,10 @@ export interface TemplateContentProps {
   ReviewStateWrapper?: (props: ReviewStateProps) => JSX.Element;
 }
 
-export const TemplateWizardContent = ({
+export const Workflow = ({
   ReviewStateWrapper = ReviewState,
   ...props
-}: TemplateContentProps): JSX.Element | null => {
+}: WorkflowProps): JSX.Element | null => {
   const styles = useStyles();
   const templateRef = stringifyEntityRef({
     kind: 'Template',
@@ -114,8 +114,8 @@ export const TemplateWizardContent = ({
   );
 };
 
-export const TemplateContent = (props: TemplateContentProps) => (
+export const EmbeddableWorkflow = (props: WorkflowProps) => (
   <SecretsContextProvider>
-    <TemplateWizardContent {...props} />
+    <Workflow {...props} />
   </SecretsContextProvider>
 );
