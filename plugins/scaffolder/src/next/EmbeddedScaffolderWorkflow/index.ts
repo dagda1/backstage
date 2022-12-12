@@ -13,10 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './Router';
-export * from './TemplateListPage';
-export * from './TemplateWizardPage';
-export * from './Workflow';
-export * from './EmbeddedScaffolderWorkflow';
-export type { ReviewStateProps } from './TemplateWizardPage/Stepper/ReviewState';
-export type { ParsedTemplateSchema } from './TemplateWizardPage/Stepper/useTemplateSchema';
+export { EmbeddedScaffolderWorkflow } from './EmbeddedScaffolderWorkflow';
