@@ -23,11 +23,14 @@ import {
 import type { WorkflowProps } from '@backstage/plugin-scaffolder';
 import { Box, Button } from '@material-ui/core';
 
-type EmbeddedWorkflowProps = Omit<WorkflowProps, 'customFieldExtensions'> & {
+type EmbeddedWorkflowProps = Omit<
+  WorkflowProps,
+  'customFieldExtensions' | 'onComplete'
+> & {
   customExtensionsElement?: React.ReactNode;
   frontPage: ReactNode;
   finishPage: ReactNode;
-};
+} & Partial<Pick<WorkflowProps, 'onComplete'>>;
 
 type Display = 'front' | 'workflow' | 'finish';
 
