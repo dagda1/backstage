@@ -117,9 +117,6 @@ export const Workflow = ({
   );
 };
 
-/**
- * @alpha
- */
 export const EmbeddableWorkflow = (props: WorkflowProps) => (
   <SecretsContextProvider>
     <Workflow {...props} />

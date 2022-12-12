@@ -17,10 +17,13 @@
 import React, { useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { Box, Button } from '@material-ui/core';
-import { EmbeddableWorkflow, type WorkflowProps } from '../Workflow';
+import { EmbeddableWorkflow, type WorkflowProps } from '../Workflow/Workflow';
 import { useGetCustomFields } from '../Router/Router';
 
-type EmbeddedWorkflowProps = Omit<
+/**
+ * @alpha
+ */
+export type EmbeddedScaffolderWorkflowProps = Omit<
   WorkflowProps,
   'customFieldExtensions' | 'onComplete'
 > & {
@@ -35,6 +38,10 @@ type DisplayComponents = Record<Display, JSX.Element>;
 
 type OnCompleteArgs = Parameters<WorkflowProps['onComplete']>[0];
 
+/**
+ * Allows the EmbeddableWorkflow to be called from outside of a normal scaffolder workflow
+ * @alpha
+ */
 export function EmbeddedScaffolderWorkflow({
   namespace,
   templateName,
@@ -46,7 +53,7 @@ export function EmbeddedScaffolderWorkflow({
   title,
   description,
   ReviewStateWrapper,
-}: EmbeddedWorkflowProps): JSX.Element {
+}: EmbeddedScaffolderWorkflowProps): JSX.Element {
   const [display, setDisplay] = useState<Display>('front');
   const fieldExtensions = useGetCustomFields(customExtensionsElement);
 

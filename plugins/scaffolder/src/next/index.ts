@@ -18,5 +18,6 @@ export * from './TemplateListPage';
 export * from './TemplateWizardPage';
 export * from './Workflow';
 export * from './EmbeddedScaffolderWorkflow';
+export type { WorkflowProps } from './Workflow';
 export type { ReviewStateProps } from './TemplateWizardPage/Stepper/ReviewState';
 export type { ParsedTemplateSchema } from './TemplateWizardPage/Stepper/useTemplateSchema';
