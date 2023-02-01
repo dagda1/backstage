@@ -254,6 +254,10 @@ catalog:
 
     # Backstage example entities
     - type: file
+      target: ../catalog-model/examples/template-defaults.yaml
+      rules:
+        - allow: [Template]
+    - type: file
       target: ../catalog-model/examples/all.yaml
     # Backstage example groups and users
     - type: file

@@ -50,7 +50,6 @@ spec:
     # This step publishes the contents of the working directory to GitHub.
     - id: publish
       name: Publish
-      action: publish:github
       input:
         allowedHosts: ['github.com']
         description: This is ${{ parameters.name }}
@@ -59,7 +58,6 @@ spec:
     # The final step is to register our new component in the catalog.
     - id: register
       name: Register
-      action: catalog:register
       input:
         repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
         catalogInfoPath: '/catalog-info.yaml'
