@@ -15,16 +15,36 @@
  */
 import { type ParsedTemplateSchema } from './useTemplateSchema';
 import { type LayoutOptions } from '../../layouts';
+import { scaffolderApiRef } from '../../api/ref';
+import { useApi } from '@backstage/core-plugin-api';
+import type { JsonValue } from '@backstage/types';
+import { useCallback } from 'react';
 
 interface Options {
   layouts?: LayoutOptions[];
+  formData: Record<string, JsonValue>;
+  templateRef: string;
+  activeStep: number;
 }
 
 export const useTransformSchemaToProps = (
   step: ParsedTemplateSchema,
-  options: Options = {},
+  options: Options,
 ): ParsedTemplateSchema => {
-  const { layouts = [] } = options;
+  const { templateRef, layouts = [], formData, activeStep } = options;
+  const scaffolderApi = useApi(scaffolderApiRef);
+
+  const resolveParameters = useCallback(
+    async function resolveParameters() {
+      const parameters = await scaffolderApi.resolveParameters(
+        templateRef,
+        formData,
+        activeStep + 1,
+      );
+    },
+    [activeStep, formData, scaffolderApi, templateRef],
+  );
+
   const objectFieldTemplate = step?.uiSchema['ui:ObjectFieldTemplate'] as
     | string
     | undefined;

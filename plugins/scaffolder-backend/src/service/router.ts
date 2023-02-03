@@ -53,6 +53,9 @@ import {
   IdentityApiGetIdentityRequest,
 } from '@backstage/plugin-auth-node';
 import { TemplateAction } from '@backstage/plugin-scaffolder-node';
+import { SecureTemplater } from '../lib/templating/SecureTemplater';
+import { parseRepoUrl } from '../scaffolder/actions/builtin/publish/util';
+import { NunjucksWorkflowRunner } from '../scaffolder/tasks/NunjucksWorkflowRunner';
 
 /**
  * RouterOptions
@@ -249,6 +252,62 @@ export async function createRouter(
     additionalTemplateFilters,
     additionalTemplateGlobals,
   });
+
+  router.post(
+    '/v2/templates/:namespace/:kind/:name/steps/:step',
+    async (req, res) => {
+      const { namespace, kind, name, step } = req.params;
+      const { formData } = req.body;
+
+      const currentStep = Number(step);
+
+      if (!formData) {
+        throw new Error('no formData in request');
+      }
+
+      const userIdentity = await identity.getIdentity({
+        request: req,
+      });
+
+      const token = userIdentity?.token;
+
+      const template = await findTemplate({
+        catalogApi: catalogClient,
+        entityRef: { kind, namespace, name },
+        token,
+      });
+      const parameters = [template.spec.parameters ?? []].flat();
+
+      const currentParam = parameters[currentStep];
+
+      const renderTemplate = await SecureTemplater.loadRenderer({
+        parseRepoUrl(url: string) {
+          return parseRepoUrl(url, integrations);
+        },
+        additionalTemplateFilters,
+        additionalTemplateGlobals,
+      });
+
+      const nunjucks = new NunjucksWorkflowRunner({
+        actionRegistry,
+        integrations,
+        logger,
+        workingDirectory,
+        additionalTemplateFilters,
+        additionalTemplateGlobals,
+      });
+
+      const resolved = nunjucks.render(
+        currentParam,
+        { parameters: { ...formData }, steps: {}, secrets: {} },
+        renderTemplate,
+      );
+
+      console.dir(resolved);
+
+      res.status(201).json(resolved);
+    },
+  );
 
   router
     .get(

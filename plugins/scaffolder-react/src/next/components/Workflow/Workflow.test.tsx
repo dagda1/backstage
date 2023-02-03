@@ -28,6 +28,7 @@ import { ScaffolderApi } from '../../../api/types';
 import { scaffolderApiRef } from '../../../api/ref';
 
 const scaffolderApiMock: jest.Mocked<ScaffolderApi> = {
+  resolveParameters: jest.fn(),
   scaffold: jest.fn(),
   getTemplateParameterSchema: jest.fn(),
   getIntegrationsList: jest.fn(),

@@ -180,6 +180,12 @@ export interface ScaffolderDryRunResponse {
  * @public
  */
 export interface ScaffolderApi {
+  resolveParameters<F extends Record<string, unknown>>(
+    templateRef: string,
+    formData: F,
+    step: number,
+  ): Promise<any>;
+
   getTemplateParameterSchema(
     templateRef: string,
   ): Promise<TemplateParameterSchema>;

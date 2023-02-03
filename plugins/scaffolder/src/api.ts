@@ -140,6 +140,38 @@ export class ScaffolderClient implements ScaffolderApi {
     return schema;
   }
 
+  async resolveParameters<F extends Record<string, unknown>>(
+    templateRef: string,
+    formData: F,
+    step: number,
+  ): Promise<any> {
+    const { namespace, kind, name } = parseEntityRef(templateRef, {
+      defaultKind: 'template',
+    });
+
+    const baseUrl = await this.discoveryApi.getBaseUrl('scaffolder');
+    const templatePath = [namespace, kind, name]
+      .map(s => encodeURIComponent(s))
+      .join('/');
+
+    const url = `${baseUrl}/v2/templates/${templatePath}/steps/${step}`;
+
+    const response = await this.fetchApi.fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ formData }),
+    });
+
+    if (!response.ok) {
+      throw await ResponseError.fromResponse(response);
+    }
+
+    const schema: TemplateParameterSchema = await response.json();
+    return schema;
+  }
+
   async scaffold(
     options: ScaffolderScaffoldOptions,
   ): Promise<ScaffolderScaffoldResponse> {

@@ -233,6 +233,7 @@ const routes = (
       path="/create/next"
       element={
         <NextScaffolderPage
+          FormProps={{ noHtml5Validate: true }}
           groups={[
             {
               title: 'Recommended',

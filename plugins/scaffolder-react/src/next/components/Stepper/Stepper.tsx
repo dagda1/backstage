@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { useAnalytics, useApiHolder } from '@backstage/core-plugin-api';
+import { useAnalytics, useApi, useApiHolder } from '@backstage/core-plugin-api';
 import { JsonValue } from '@backstage/types';
 import {
   Stepper as MuiStepper,
@@ -39,6 +39,7 @@ import { FormProps } from '../../types';
 import { LayoutOptions } from '../../../layouts';
 import { useTransformSchemaToProps } from '../../hooks/useTransformSchemaToProps';
 import { hasErrors } from './utils';
+import { scaffolderApiRef } from '../../../api/ref';
 
 const useStyles = makeStyles(theme => ({
   backButton: {
@@ -72,6 +73,7 @@ export type StepperProps = {
     reviewButtonText?: ReactNode;
   };
   layouts?: LayoutOptions[];
+  templateRef: string;
 };
 
 // TODO(blam): We require here, as the types in this package depend on @rjsf/core explicitly
@@ -84,7 +86,7 @@ const Form = withTheme(require('@rjsf/material-ui-v5').Theme);
  * @alpha
  */
 export const Stepper = (stepperProps: StepperProps) => {
-  const { layouts = [], components = {}, ...props } = stepperProps;
+  const { layouts = [], components = {}, templateRef, ...props } = stepperProps;
   const {
     ReviewStateComponent = ReviewState,
     createButtonText = 'Create',
@@ -95,6 +97,12 @@ export const Stepper = (stepperProps: StepperProps) => {
   const apiHolder = useApiHolder();
   const [activeStep, setActiveStep] = useState(0);
   const [formState, setFormState] = useFormDataFromQuery(props.initialState);
+  const currentStep = useTransformSchemaToProps(steps[activeStep], {
+    layouts,
+    formData: formState,
+    templateRef,
+    activeStep,
+  });
 
   const [errors, setErrors] = useState<undefined | FormValidation>();
   const styles = useStyles();
@@ -150,6 +158,7 @@ export const Stepper = (stepperProps: StepperProps) => {
         return stepNum;
       });
     }
+
     setFormState(current => ({ ...current, ...formData }));
   };
 

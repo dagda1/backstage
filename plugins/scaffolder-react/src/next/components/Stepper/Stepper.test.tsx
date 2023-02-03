@@ -22,6 +22,13 @@ import type { RJSFValidationError } from '@rjsf/utils';
 import { JsonValue } from '@backstage/types';
 import { NextFieldExtensionComponentProps } from '../../extensions';
 import { LayoutTemplate } from '../../../layouts';
+import { stringifyEntityRef } from '@backstage/catalog-model';
+
+const templateRef = stringifyEntityRef({
+  kind: 'Template',
+  namespace: 'default',
+  name: 'docs-template',
+});
 
 describe('Stepper', () => {
   it('should render the step titles for each step of the manifest', async () => {
@@ -34,7 +41,12 @@ describe('Stepper', () => {
     };
 
     const { getByText } = await renderInTestApp(
-      <Stepper manifest={manifest} extensions={[]} onCreate={jest.fn()} />,
+      <Stepper
+        templateRef={templateRef}
+        manifest={manifest}
+        extensions={[]}
+        onCreate={jest.fn()}
+      />,
     );
 
     for (const step of manifest.steps) {
@@ -52,7 +64,12 @@ describe('Stepper', () => {
     };
 
     const { getByRole } = await renderInTestApp(
-      <Stepper manifest={manifest} extensions={[]} onCreate={jest.fn()} />,
+      <Stepper
+        templateRef={templateRef}
+        manifest={manifest}
+        extensions={[]}
+        onCreate={jest.fn()}
+      />,
     );
 
     expect(getByRole('button', { name: 'Next' })).toBeInTheDocument();
@@ -92,7 +109,12 @@ describe('Stepper', () => {
     };
 
     const { getByRole } = await renderInTestApp(
-      <Stepper manifest={manifest} extensions={[]} onCreate={jest.fn()} />,
+      <Stepper
+        templateRef={templateRef}
+        manifest={manifest}
+        extensions={[]}
+        onCreate={jest.fn()}
+      />,
     );
 
     await fireEvent.change(getByRole('textbox', { name: 'name' }), {
@@ -172,6 +194,7 @@ describe('Stepper', () => {
 
     const { getByRole } = await renderInTestApp(
       <Stepper
+        templateRef={templateRef}
         manifest={manifest}
         onCreate={onCreate}
         extensions={[
@@ -228,6 +251,7 @@ describe('Stepper', () => {
 
     const { getByText } = await renderInTestApp(
       <Stepper
+        templateRef={templateRef}
         manifest={manifest}
         extensions={[{ name: 'Mock', component: MockComponent }]}
         onCreate={jest.fn()}
@@ -265,6 +289,7 @@ describe('Stepper', () => {
 
     const { getByText, getByRole } = await renderInTestApp(
       <Stepper
+        templateRef={templateRef}
         manifest={manifest}
         extensions={[]}
         onCreate={jest.fn()}
@@ -309,7 +334,12 @@ describe('Stepper', () => {
     });
 
     const { getByRole } = await renderInTestApp(
-      <Stepper manifest={manifest} extensions={[]} onCreate={jest.fn()} />,
+      <Stepper
+        templateRef={templateRef}
+        manifest={manifest}
+        extensions={[]}
+        onCreate={jest.fn()}
+      />,
     );
 
     expect(getByRole('textbox', { name: 'firstName' })).toHaveValue('John');
@@ -337,7 +367,12 @@ describe('Stepper', () => {
     });
 
     const { getByRole } = await renderInTestApp(
-      <Stepper manifest={manifest} extensions={[]} onCreate={onCreate} />,
+      <Stepper
+        templateRef={templateRef}
+        manifest={manifest}
+        extensions={[]}
+        onCreate={onCreate}
+      />,
     );
 
     await act(async () => {
@@ -373,6 +408,7 @@ describe('Stepper', () => {
 
     const { getByRole } = await renderInTestApp(
       <Stepper
+        templateRef={templateRef}
         manifest={manifest}
         onCreate={jest.fn()}
         extensions={[]}
@@ -425,6 +461,7 @@ describe('Stepper', () => {
 
       const { getByText, getByRole } = await renderInTestApp(
         <Stepper
+          templateRef={templateRef}
           manifest={manifest}
           extensions={[]}
           onCreate={jest.fn()}

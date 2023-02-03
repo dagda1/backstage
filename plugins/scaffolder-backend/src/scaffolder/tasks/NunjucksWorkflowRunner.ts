@@ -131,7 +131,7 @@ export class NunjucksWorkflowRunner implements WorkflowRunner {
     );
   }
 
-  private render<T>(
+  public render<T>(
     input: T,
     context: TemplateContext,
     renderTemplate: SecureTemplateRenderer,
@@ -274,7 +274,6 @@ export class NunjucksWorkflowRunner implements WorkflowRunner {
               continue;
             }
           }
-
           // Secrets are only passed when templating the input to actions for security reasons
           const input =
             (step.input &&

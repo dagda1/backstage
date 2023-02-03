@@ -33,10 +33,19 @@ spec:
           default: ${{ parameters.repoUrl }}
 
   steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.repoUrl }}
+
     - id: publish
       name: Publish
       action: publish:github
       input:
+        if: ${{ parameters.repoUrl === "github.com" }}
         allowedHosts: ['github.com']
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}

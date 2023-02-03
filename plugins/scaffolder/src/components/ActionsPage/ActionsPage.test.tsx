@@ -24,6 +24,7 @@ import { ApiProvider } from '@backstage/core-app-api';
 import { rootRouteRef } from '../../routes';
 
 const scaffolderApiMock: jest.Mocked<ScaffolderApi> = {
+  resolveParameters: jest.fn(),
   scaffold: jest.fn(),
   getTemplateParameterSchema: jest.fn(),
   getIntegrationsList: jest.fn(),
