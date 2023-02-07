@@ -97,15 +97,15 @@ export const Stepper = (stepperProps: StepperProps) => {
   const apiHolder = useApiHolder();
   const [activeStep, setActiveStep] = useState(0);
   const [formState, setFormState] = useFormDataFromQuery(props.initialState);
-  const currentStep = useTransformSchemaToProps(steps[activeStep], {
-    layouts,
-    formData: formState,
-    templateRef,
-    activeStep,
-  });
+  const [resolvedSchema, setResolvedSchema] = useState<
+    Record<string, JsonValue>
+  >({});
+  const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState<undefined | FormValidation>();
   const styles = useStyles();
+
+  const scaffolderApi = useApi(scaffolderApiRef);
 
   const extensions = useMemo(() => {
     return Object.fromEntries(
@@ -142,6 +142,8 @@ export const Stepper = (stepperProps: StepperProps) => {
   }: {
     formData?: Record<string, JsonValue>;
   }) => {
+    setLoading(true);
+
     // TODO(blam): What do we do about loading states, does each field extension get a chance
     // to display it's own loading? Or should we grey out the entire form.
     setErrors(undefined);
@@ -149,6 +151,7 @@ export const Stepper = (stepperProps: StepperProps) => {
     const returnedValidation = await validation(formData);
 
     if (hasErrors(returnedValidation)) {
+      setLoading(false);
       setErrors(returnedValidation);
     } else {
       setErrors(undefined);
@@ -159,8 +162,31 @@ export const Stepper = (stepperProps: StepperProps) => {
       });
     }
 
+    if (activeStep < steps.length - 1) {
+      const parameters = await scaffolderApi.resolveParameters(
+        templateRef,
+        formState,
+        activeStep + 1,
+      );
+
+      setResolvedSchema(parameters);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 100);
+    }
+
     setFormState(current => ({ ...current, ...formData }));
   };
+
+  const currentStep = useTransformSchemaToProps(steps[activeStep], {
+    layouts,
+    resolvedSchema,
+  });
+
+  if (loading) {
+    return <h1>...loading</h1>;
+  }
 
   return (
     <>

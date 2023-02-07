@@ -15,39 +15,28 @@
  */
 import { type ParsedTemplateSchema } from './useTemplateSchema';
 import { type LayoutOptions } from '../../layouts';
-import { scaffolderApiRef } from '../../api/ref';
-import { useApi } from '@backstage/core-plugin-api';
-import type { JsonValue } from '@backstage/types';
-import { useCallback } from 'react';
 
 interface Options {
   layouts?: LayoutOptions[];
-  formData: Record<string, JsonValue>;
-  templateRef: string;
-  activeStep: number;
+  resolvedSchema?: Record<string, unknown>;
 }
 
 export const useTransformSchemaToProps = (
   step: ParsedTemplateSchema,
-  options: Options,
+  options: Options = {},
 ): ParsedTemplateSchema => {
-  const { templateRef, layouts = [], formData, activeStep } = options;
-  const scaffolderApi = useApi(scaffolderApiRef);
-
-  const resolveParameters = useCallback(
-    async function resolveParameters() {
-      const parameters = await scaffolderApi.resolveParameters(
-        templateRef,
-        formData,
-        activeStep + 1,
-      );
-    },
-    [activeStep, formData, scaffolderApi, templateRef],
-  );
-
+  const { layouts = [], resolvedSchema = {} } = options;
   const objectFieldTemplate = step?.uiSchema['ui:ObjectFieldTemplate'] as
     | string
     | undefined;
+
+  const mergedProperties = {
+    ...((step.mergedSchema?.properties as Record<string, unknown>) ?? {}),
+    ...(resolvedSchema.properties ?? {}),
+  };
+
+  step.mergedSchema.properties = mergedProperties;
+  step.schema.properties = mergedProperties;
 
   if (typeof objectFieldTemplate !== 'string') {
     return step;
