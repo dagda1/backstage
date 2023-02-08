@@ -97,9 +97,6 @@ export const Stepper = (stepperProps: StepperProps) => {
   const apiHolder = useApiHolder();
   const [activeStep, setActiveStep] = useState(0);
   const [formState, setFormState] = useFormDataFromQuery(props.initialState);
-  const [resolvedSchema, setResolvedSchema] = useState<
-    Record<string, JsonValue>
-  >({});
   const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState<undefined | FormValidation>();
@@ -135,8 +132,6 @@ export const Stepper = (stepperProps: StepperProps) => {
     [setFormState],
   );
 
-  const currentStep = useTransformSchemaToProps(steps[activeStep], { layouts });
-
   const handleNext = async ({
     formData = {},
   }: {
@@ -160,20 +155,29 @@ export const Stepper = (stepperProps: StepperProps) => {
         analytics.captureEvent('click', `Next Step (${stepNum})`);
         return stepNum;
       });
-    }
 
-    if (activeStep < steps.length - 1) {
-      const parameters = await scaffolderApi.resolveParameters(
-        templateRef,
-        formState,
-        activeStep + 1,
-      );
+      if (activeStep < steps.length - 1) {
+        const nextStep = activeStep + 1;
+        const parameters = await scaffolderApi.resolveParameters(
+          templateRef,
+          formState,
+          nextStep,
+        );
 
-      setResolvedSchema(parameters);
+        const step = steps[nextStep];
 
-      setTimeout(() => {
-        setLoading(false);
-      }, 100);
+        const mergedProperties = {
+          ...((step.mergedSchema?.properties as Record<string, unknown>) ?? {}),
+          ...((parameters ?? {}).properties ?? {}),
+        };
+
+        step.mergedSchema.properties = mergedProperties;
+        step.schema.properties = mergedProperties;
+
+        setTimeout(() => {
+          setLoading(false);
+        }, 100);
+      }
     }
 
     setFormState(current => ({ ...current, ...formData }));
@@ -181,7 +185,6 @@ export const Stepper = (stepperProps: StepperProps) => {
 
   const currentStep = useTransformSchemaToProps(steps[activeStep], {
     layouts,
-    resolvedSchema,
   });
 
   if (loading) {

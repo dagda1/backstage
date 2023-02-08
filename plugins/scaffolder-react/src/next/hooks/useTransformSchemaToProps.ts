@@ -18,25 +18,16 @@ import { type LayoutOptions } from '../../layouts';
 
 interface Options {
   layouts?: LayoutOptions[];
-  resolvedSchema?: Record<string, unknown>;
 }
 
 export const useTransformSchemaToProps = (
   step: ParsedTemplateSchema,
   options: Options = {},
 ): ParsedTemplateSchema => {
-  const { layouts = [], resolvedSchema = {} } = options;
+  const { layouts = [] } = options;
   const objectFieldTemplate = step?.uiSchema['ui:ObjectFieldTemplate'] as
     | string
     | undefined;
-
-  const mergedProperties = {
-    ...((step.mergedSchema?.properties as Record<string, unknown>) ?? {}),
-    ...(resolvedSchema.properties ?? {}),
-  };
-
-  step.mergedSchema.properties = mergedProperties;
-  step.schema.properties = mergedProperties;
 
   if (typeof objectFieldTemplate !== 'string') {
     return step;
