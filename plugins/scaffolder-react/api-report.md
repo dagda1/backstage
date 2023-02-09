@@ -240,6 +240,12 @@ export interface ScaffolderApi {
   listTasks?(options: { filterByOwnership: 'owned' | 'all' }): Promise<{
     tasks: ScaffolderTask[];
   }>;
+  // (undocumented)
+  resolveParameters<F extends Record<string, unknown>>(
+    templateRef: string,
+    formData: F,
+    step: number,
+  ): Promise<any>;
   scaffold(
     options: ScaffolderScaffoldOptions,
   ): Promise<ScaffolderScaffoldResponse>;
@@ -391,6 +397,7 @@ export type StepperProps = {
     reviewButtonText?: ReactNode;
   };
   layouts?: LayoutOptions[];
+  templateRef: string;
 };
 
 // @alpha

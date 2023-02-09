@@ -157,6 +157,7 @@ export const Stepper = (stepperProps: StepperProps) => {
       });
 
       if (activeStep < steps.length - 1) {
+        // rough spike code
         const nextStep = activeStep + 1;
         const parameters = await scaffolderApi.resolveParameters(
           templateRef,
@@ -174,9 +175,7 @@ export const Stepper = (stepperProps: StepperProps) => {
         step.mergedSchema.properties = mergedProperties;
         step.schema.properties = mergedProperties;
 
-        setTimeout(() => {
-          setLoading(false);
-        }, 100);
+        setLoading(false);
       }
     }
 

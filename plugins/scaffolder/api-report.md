@@ -427,6 +427,12 @@ export class ScaffolderClient implements ScaffolderApi_2 {
     tasks: ScaffolderTask_2[];
   }>;
   // (undocumented)
+  resolveParameters<F extends Record<string, unknown>>(
+    templateRef: string,
+    formData: F,
+    step: number,
+  ): Promise<any>;
+  // (undocumented)
   scaffold(
     options: ScaffolderScaffoldOptions_2,
   ): Promise<ScaffolderScaffoldResponse_2>;
